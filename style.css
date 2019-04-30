@@ -1,0 +1,47 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  font-family: sans-serif;
+}
+
+a {
+  color: #0078a8;
+  text-decoration: none;
+}
+
+a:focus, a:hover {
+  text-decoration: underline;
+}
+
+.ol-viewport {
+  background: #ddd;
+}
+
+.ol-zoom, .ol-zoom:hover {
+  background-color: rgb(0, 0, 0, 0.2);
+  border-radius: 0;
+  padding: 1px;
+}
+
+.ol-zoom button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  color: #000;
+  font-size: 22px;
+  margin: 0;
+}
+
+.ol-zoom button:focus {
+  background-color: #f4f4f4;
+  outline-color: #777;
+}
+
+.ol-zoom button:hover {
+  background-color: #f4f4f4;
+  cursor: pointer;
+}
+
+.ol-attribution ul {
+  font-size: 12px;
+}
