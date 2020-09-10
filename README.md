@@ -3,14 +3,14 @@
 Swiss cantonal boundaries as vector tiles, using the same tile grid as [swisstopo raster maps](https://api3.geo.admin.ch/services/sdiservices.html#wmts).
 
 ## Client Demos
-- [Using Leaflet](https://rzoller.ch/swiss-tile-grid-vt/leaflet.html)
-- [Using OpenLayers](https://rzoller.ch/swiss-tile-grid-vt/)
+- [Using Leaflet](https://labs.karavia.ch/swiss-tile-grid-vt/leaflet.html)
+- [Using OpenLayers](https://labs.karavia.ch/swiss-tile-grid-vt/)
 
 ## Technical Details
 
-The tiles have been generated with [t-rex](https://t-rex.tileserver.ch/) and are available through the gh-pages branch of this repo.
+The tiles have been generated with [t-rex](https://t-rex.tileserver.ch/) and are available in this repo.
 
-URL: `https://rzoller.ch/swiss-tile-grid-vt/cantonal-boundaries/{z}/{x}/{y}.pbf`
+URL: `https://labs.karavia.ch/swiss-tile-grid-vt/cantonal-boundaries/{z}/{x}/{y}.pbf`
 
 Zoom levels 0 to 20 have been generated.
 
