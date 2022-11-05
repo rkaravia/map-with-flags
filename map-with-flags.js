@@ -1,47 +1,44 @@
 'use strict';
 
-loadCantonPatterns().then((cantonPatterns) => {
-  const map = initializeMap();
+const cantonPatterns = createCantonPatterns();
 
-  const backgroundMap = swisstopoGrayMap();
-  map.addLayer(backgroundMap);
+const map = initializeMap();
 
-  const overlay = cantonalBoundaries(cantonPatterns);
-  map.addLayer(overlay);
+const backgroundMap = swisstopoGrayMap();
+map.addLayer(backgroundMap);
 
-  mouseMoveRevealCircle(map, overlay);
-});
+const overlay = cantonalBoundaries(cantonPatterns);
+map.addLayer(overlay);
 
-function loadCantonPatterns() {
+mouseMoveRevealCircle(map, overlay);
+
+function createCantonPatterns() {
   const cantons = { 'Aargau': 'AG', 'Appenzell Innerrhoden': 'AI', 'Appenzell Ausserrhoden': 'AR', 'Bern': 'BE', 'Basel-Landschaft': 'BL', 'Basel-Stadt': 'BS', 'Fribourg': 'FR', 'Genève': 'GE', 'Glarus': 'GL', 'Graubünden': 'GR', 'Jura': 'JU', 'Luzern': 'LU', 'Neuchâtel': 'NE', 'Nidwalden': 'NW', 'Obwalden': 'OW', 'St. Gallen': 'SG', 'Schaffhausen': 'SH', 'Solothurn': 'SO', 'Schwyz': 'SZ', 'Thurgau': 'TG', 'Ticino': 'TI', 'Uri': 'UR', 'Vaud': 'VD', 'Valais': 'VS', 'Zug': 'ZG', 'Zürich': 'ZH' };
-  const loadRequests = Object.entries(cantons).map(([name, id]) => {
-    return new Promise((resolve) => {
-      const image = new Image();
-      image.onload = () => {
-        cantons[name] = createPatterns(image, [0, 1, 2]);
-        resolve();
-      };
-      image.crossOrigin = 'anonymous';
-      image.src = `https://unpkg.com/ch-canton-symbols@1.3.1/symbols/13x13/${id.toLowerCase()}.svg`;
+  const patternRoot = document.querySelector('.pattern-svg');
+  Object.entries(cantons).forEach(([name, id]) => {
+    cantons[name] = [0, 1, 2].map(scale => {
+      const factor = 2 ** scale;
+      const patternId = `pattern-${id}-${scale}`;
+      const pattern = document.createElementNS('http://www.w3.org/2000/svg', 'pattern');
+      pattern.setAttributeNS(null, 'id', patternId);
+      pattern.setAttributeNS(null, 'width', 16 * factor);
+      pattern.setAttributeNS(null, 'height', 16 * factor);
+      pattern.setAttributeNS(null, 'patternUnits', 'userSpaceOnUse');
+      patternRoot.append(pattern);
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttributeNS(null, 'width', 16 * factor);
+      rect.setAttributeNS(null, 'height', 16 * factor);
+      rect.setAttributeNS(null, 'fill', '#fff');
+      pattern.append(rect);
+      const image = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      image.setAttributeNS(null, 'width', 13 * factor);
+      image.setAttributeNS(null, 'height', 13 * factor);
+      image.setAttributeNS(null, 'href', `https://unpkg.com/ch-canton-symbols@1.3.1/symbols/13x13/${id.toLowerCase()}.svg`);
+      pattern.append(image);
+      return `url(#${patternId})`;
     });
   });
-  return Promise.all(loadRequests).then(() => cantons);
-}
-
-function createPatterns(image, scales) {
-  return scales.map((scale) => {
-    const factor = Math.pow(2, scale) * window.devicePixelRatio;
-    const size = 16 * factor;
-    const canvas = document.createElement('canvas');
-    canvas.width = canvas.height = size;
-    const context = canvas.getContext('2d');
-    context.fillStyle = '#fff';
-    context.fillRect(0, 0, size, size);
-    const { width, height } = image;
-    context.drawImage(image, 0, 0, width * factor, height * factor);
-    const patternContext = document.createElement('canvas').getContext('2d');
-    return patternContext.createPattern(canvas, 'repeat');
-  });
+  return cantons
 }
 
 function initializeMap() {
@@ -67,7 +64,6 @@ function cantonalBoundaries(cantonPatterns) {
       <a href="https://github.com/rkaravia/map-with-flags">Code on GitHub</a>
     `,
     maxNativeZoom: 20,
-    rendererFactory: hiDpiPolygonRenderer,
     vectorTileLayerStyles: {
       swissboundaries3d_1_3_tlm_kantonsgebiet(properties, zoom) {
         let patternSize = 0;
@@ -89,41 +85,6 @@ function cantonalBoundaries(cantonPatterns) {
       },
     },
   });
-}
-
-function hiDpiPolygonRenderer(...args) {
-  const Renderer = L.Canvas.Tile.extend({
-    initialize(tileCoord, tileSize, options) {
-      L.Canvas.Tile.prototype.initialize.call(this, tileCoord, tileSize.multiplyBy(window.devicePixelRatio), options);
-    },
-
-    _updatePoly(layer, closed) {
-      if (!this._drawing) { return; }
-
-      var i, j, len2, p,
-          parts = layer._parts,
-          len = parts.length,
-          ctx = this._ctx;
-
-      if (!len) { return; }
-
-      ctx.beginPath();
-
-      for (i = 0; i < len; i++) {
-        for (j = 0, len2 = parts[i].length; j < len2; j++) {
-          p = parts[i][j];
-          ctx[j ? 'lineTo' : 'moveTo'](p.x * window.devicePixelRatio, p.y * window.devicePixelRatio);
-        }
-        if (closed) {
-          ctx.closePath();
-        }
-      }
-
-      this._fillStroke(ctx, layer);
-    },
-  });
-
-  return new Renderer(...args);
 }
 
 function mouseMoveRevealCircle(map, gridLayer) {
