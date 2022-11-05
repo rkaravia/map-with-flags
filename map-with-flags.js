@@ -49,10 +49,7 @@ function createCantonPatterns() {
 }
 
 function initializeMap() {
-  const element = document.createElement('div');
-  document.body.appendChild(element);
-
-  const map = L.map(element, { crs: L.CRS.EPSG2056, minZoom: 14 });
+  const map = L.map('map', { crs: L.CRS.EPSG2056, minZoom: 14 });
 
   map.fitSwitzerland();
 

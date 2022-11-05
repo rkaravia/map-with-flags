@@ -9,8 +9,9 @@
   <style>
     html,
     body,
-    .leaflet-container {
-      width: 100%;
+    #map {
+      position: relative;
+      z-index: 0;
       height: 100%;
       margin: 0;
     }
@@ -19,13 +20,37 @@
       display: block;
       height: 0;
     }
-  </style>
 
+    .overlay-container {
+      position: absolute;
+      width: 100%;
+      bottom: 32px;
+      display: flex;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .overlay {
+      padding: 8px 12px;
+      border-radius: 16px;
+      background: rgb(0, 0, 0, 0.8);
+      color: #fff;
+      font: 14px "Helvetica Neue", Arial, Helvetica, sans-serif;
+    }
+  </style>
+</head>
+
+<body>
   <svg class="pattern-svg"></svg>
+  <div id="map"></div>
+  <div class="overlay-container">
+    <div class="overlay">Tap canton to highlight...</div>
+  </div>
+
   <script src="https://unpkg.com/leaflet@1.9.2/dist/leaflet.js" integrity="sha384-zrFQ4BIvCMUhUb6NKv9N6+lGhC7+M9l7lyLfVaa/dqQtK4PLTS6LZNvAyPJvls7U" crossorigin="anonymous"></script>
   <script src="leaflet-vector-tile-layer.js"></script>
   <script src="https://unpkg.com/leaflet-tilelayer-swiss@2.3.0/dist/Leaflet.TileLayer.Swiss.umd.js" integrity="sha384-M4p8VfZ8RG6qNiPYA3vOCApQXAlLtnJXVPdydMYPAsvvIDsWp2dqqzF2OEeWWNhy" crossorigin="anonymous"></script>
-  <script src="map-with-flags.js"></script>
-</head>
+  <script src="map-with-flags.js"></script>  
+</body>
 
 </html>
