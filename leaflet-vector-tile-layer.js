@@ -384,13 +384,14 @@
         return o
     }
     )), x = Object.freeze((function(e, i) {
+        var coords = e;
         var r = {}
           , n = i.getTileSize()
           , s = t.SVG.create("svg")
           , o = t.SVG.create("g")
           , a = [];
         function u(t, e, r) {
-            var n = i.getFeatureStyle(t, e);
+            var n = i.getFeatureStyle(t, e, coords.z);
             if (n) {
                 var s = g(t, e, o, r, n);
                 a.push(s),
@@ -1182,10 +1183,11 @@
             return t.divideBy(o.getZoomScale(f(e), e)).round()
         }
         ,
-        r.getFeatureStyle = function(t, e) {
-            if (!i.filter || i.filter(t, e, a)) {
+        r.getFeatureStyle = function(t, e, zoom) {
+            zoom = zoom === undefined ? a : zoom;
+            if (!i.filter || i.filter(t, e, zoom)) {
                 var r = i.style;
-                return "function" == typeof r ? r(t, e, a) : r
+                return "function" == typeof r ? r(t, e, zoom) : r
             }
         }
         ,
